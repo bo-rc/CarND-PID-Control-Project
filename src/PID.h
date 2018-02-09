@@ -1,11 +1,14 @@
 #ifndef PID_H
 #define PID_H
+#include "ring_buffer.h"
 
 class PID {
 public:
   /*
   * Errors
   */
+  double curr_delta;
+  double prev_delta;
   double p_error;
   double i_error;
   double d_error;
@@ -18,9 +21,16 @@ public:
   double Kd;
 
   /*
+   * dt
+   */
+  double dt;
+
+  Ring_Buffer buf;
+
+  /*
   * Constructor
   */
-  PID();
+  PID(int ring_buffer_size);
 
   /*
   * Destructor.
@@ -30,7 +40,7 @@ public:
   /*
   * Initialize PID.
   */
-  void Init(double Kp, double Ki, double Kd);
+  void Init(double Kp, double Ki, double Kd, double dt_in);
 
   /*
   * Update the PID error variables given cross track error.
@@ -38,9 +48,9 @@ public:
   void UpdateError(double cte);
 
   /*
-  * Calculate the total PID error.
+  * Calculate the total PID control signal.
   */
-  double TotalError();
+  double Control();
 };
 
 #endif /* PID_H */
