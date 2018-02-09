@@ -10,6 +10,7 @@ public:
     void insert(double val);
     double integrate();
     void clear();
+    void set_buf_size(int s);
 
 private:
     int theSize;

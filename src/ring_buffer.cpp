@@ -21,3 +21,10 @@ double Ring_Buffer::integrate() {
 void Ring_Buffer::clear() {
     buf.assign(theSize,0);
 }
+
+void Ring_Buffer::set_buf_size(int s)
+{
+    theSize = s;
+    idx = 0;
+    buf.assign(theSize, 0);
+}

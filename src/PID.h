@@ -30,7 +30,7 @@ public:
   /*
   * Constructor
   */
-  PID(int ring_buffer_size);
+  PID();
 
   /*
   * Destructor.
@@ -40,7 +40,7 @@ public:
   /*
   * Initialize PID.
   */
-  void Init(double Kp, double Ki, double Kd, double dt_in);
+  void Init(double dt_in, int buff_size, double Kp, double Ki, double Kd);
 
   /*
   * Update the PID error variables given cross track error.
