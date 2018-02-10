@@ -37,7 +37,7 @@ int main(int argc, char** argv)
     PID pid;
     if (argc == 1) {
 	// Kp, Ki, Kd, dt, buff_size
-	pid.Init(1.0, 10, 6.0, 2.0, 300);
+	pid.Init(1.0, 10, 7.2, 3.8, 360);
 	throt = 0.4;
     } else {
 	auto dt = std::stod(std::string(argv[1]));
@@ -64,8 +64,8 @@ int main(int argc, char** argv)
 		if (event == "telemetry") {
 		    // j[1] is the data JSON object
 		    double cte = std::stod(j[1]["cte"].get<std::string>());
-		    double speed = std::stod(j[1]["speed"].get<std::string>());
-		    double angle = std::stod(j[1]["steering_angle"].get<std::string>());
+//		    double speed = std::stod(j[1]["speed"].get<std::string>());
+//		    double angle = std::stod(j[1]["steering_angle"].get<std::string>());
 		    double steer_value;
 		    /*
 	  * TODO: Calcuate steering value here, remember the steering value is
@@ -76,12 +76,12 @@ int main(int argc, char** argv)
 		    pid.UpdateError(cte);
 		    steer_value = pid.Control();
 
-		    // DEBUG
-		    std::cout << "CTE: " << cte
-			      << " p_error: " << pid.p_error
-			      << " i_error: " << pid.i_error
-			      << " d_error: " << pid.d_error
-			      << " steering: " << steer_value << std::endl;
+//		    // DEBUG
+//		    std::cout << "CTE: " << cte
+//			      << " p_error: " << pid.p_error
+//			      << " i_error: " << pid.i_error
+//			      << " d_error: " << pid.d_error
+//			      << " steering: " << steer_value << std::endl;
 
 		    json msgJson;
 		    msgJson["steering_angle"] = steer_value;

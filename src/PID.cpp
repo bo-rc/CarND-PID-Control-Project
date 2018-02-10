@@ -1,10 +1,12 @@
 #include "PID.h"
 #include <cmath>
+#include <algorithm>
+#include <iostream>
 
 const double p_gain = 6.0;
-const double i_gain = 2.0;
+const double i_gain = 3.0;
 const double d_gain = 300;
-const double cte_range = 40;
+const double pid_range = 40;
 const int buf_size = 10;
 
 using namespace std;
@@ -50,14 +52,14 @@ void PID::UpdateError(double cte) {
 
 double PID::Control() {
     auto pid = -Kp * p_error - Ki * i_error - Kd * d_error;
-    auto ctrl = pid / (cte_range / 2.0);
-//    if (ctrl > 1.0) {
-//        return 1.0;
-//    } else if (ctrl < -1.0) {
-//        return -1.0;
-//    } else {
-//        return ctrl;
-//    }
+    // std::cout << "pid raw = " << pid << std::endl;
+
+    // scaling using possible range of cte
+    auto ctrl = pid / pid_range;
+    // clamping to [-1,1]
+    ctrl = std::max(-1.0, std::min(ctrl, 1.0));
+    // using expo to give more resolution around 0.0
+    ctrl = std::pow(ctrl,3);
     return ctrl;
 }
 

@@ -16,19 +16,23 @@ cmake .. && make
 
 The `PID` class:
 * follows the algorithm in the lectures.
-* uses a ring buffer, an instance of the [`Ring_Buffer`]() class, to model memory for the integral term: rather than taking account of all history of previous errors, the ring buffer only records a short history of errors and the [`integrate()`]() method gives the integral error. The purpose is to limit the acummulation of the integral term, otherwise the integral term can be arbitrarily large if the car is bogged down.
-* uses [`Control()`]() method to ouput steering command.
-  * in this method, the control output is scaled by a hyperparameter `cte_range`, which is hardcoded to be twice the magnitude of `cte` if the car is about to fall off track. This hyperparameter can be tuned.
+* uses a ring buffer, an instance of the [`Ring_Buffer`](src/ring_buffer.h) class, to model memory for the integral term: rather than taking account of all history of previous errors, the ring buffer only records a short history of errors and the [`integrate()`]() method gives the integral error. The purpose is to limit the acummulation of the integral term, otherwise the integral term can be arbitrarily large if the car is bogged down by obstables for instance.
+* uses [`Control()`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L51) method to ouput steering command.
+  * in this method, the raw pid value is scaled by a hyperparameter [`pid_range`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L7), which is determined (through test runs) to be the maximun magnitude of raw pid calculation. This hyperparameter can be tuned.
+  * a clamping function is used to limit pid output to [-1, 1]
+  * finally, a cubic polynomial is used to squash the linear pid such that there is more resolution for the control output around 0.0.
 
 ## Tuning
-The tuning is done manually. The binary `pid` program accepts arguments (demonstrated in [`main.cpp`]()) such that I coubld quickly try different parameters.
+The tuning is done manually. The binary `pid` program accepts arguments (demonstrated in [`main.cpp`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/main.cpp#L38)) such that I could quickly test different parameters.
 
-The tuning is performed using a heuristic method as follows:
-* First tune P gain, with D and I gain turned off: increase P gain until the car ossilates right and left on a straight lane. 
-* Then, lower P by 10% and add D gain until the ossilation is gone on a straight lane.
-* Finally, tune I gain on a turn. Without an integral term, the accumulation of errors on a turn could not be handled by just the P gain. So the best place to tune the I gain, in my experience, is during a turn. Gradually increase I gain until the turning of the car slightly overshoot, then increase D gain a little bit to dampen the overshooting.
+The tuning is performed using a well-known heuristic method as follows:
+* First tune P gain, with D and I gain turned off: increase P gain until the car starts to oscillate on a straight lane.
+* Then, lower P by 10% and add D gain until the oscillation is gone on a straight lane.
+* Finally, tune I gain on a turn. Without an integral term, the accumulation of errors on a turn could not be handled by just the P and D gain. So the best place to tune the I gain, in my experience, is during a turn. Gradually increase I gain until the turning of the car slightly overshoot, then increase D gain a little bit to dampen the overshooting.
 
-Finally, I use a set of tuned parameters to initialize the `PID` controller for steering in the `main.cpp` file. Without arguments with `./pid`, those tuned parameters will be used.
+Finally, I use a set of tuned parameters to initialize the `PID` controller for steering in [`main.cpp`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/main.cpp#L40). When running `./pid` w/o any arguments, those tuned parameters will be used.
+
+The throttle input is a fixed value. Nevertheless, we can use a second pid controller to control it.
 
 ## Full-lap run
 
