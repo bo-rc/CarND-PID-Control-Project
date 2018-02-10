@@ -16,9 +16,9 @@ cmake .. && make
 
 The `PID` class:
 * follows the algorithm in the lectures.
-* uses a ring buffer, an instance of the [`Ring_Buffer`](src/ring_buffer.h) class, to model memory for the integral term: rather than taking account of all history of previous errors, the ring buffer only records a short history of errors and the [`integrate()`]() method gives the integral error. The purpose is to limit the acummulation of the integral term, otherwise the integral term can be arbitrarily large if the car is bogged down by obstables for instance.
-* uses [`Control()`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L51) method to ouput steering command.
-  * in this method, the raw pid value is scaled by a hyperparameter [`pid_range`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L7), which is determined (through test runs) to be the maximun magnitude of raw pid calculation. This hyperparameter can be tuned.
+* uses a ring buffer, an instance of the [`Ring_Buffer`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/ring_buffer.h#L5) class, to model memory for the integral term: rather than taking account of all history of previous errors, the ring buffer only records a short history of errors and the [`integrate()`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/ring_buffer.cpp#L17) method gives the integral error. The purpose is to limit the acummulation of the integral term, otherwise the integral term can be arbitrarily large if the car is bogged down by obstables for instance.
+* uses [`Control()`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L53) method to ouput steering command.
+  * in this method, the raw pid value is scaled by a hyperparameter [`pid_range`](https://github.com/bo-rc/CarND-PID-Control-Project/blob/master/src/PID.cpp#L9), which is determined (through test runs) to be the maximun magnitude of raw pid calculation. This hyperparameter can be tuned.
   * a clamping function is used to limit pid output to [-1, 1]
   * finally, a cubic polynomial is used to squash the linear pid such that there is more resolution for the control output around 0.0.
 
@@ -35,7 +35,7 @@ Finally, I use a set of tuned parameters to initialize the `PID` controller for 
 The throttle input is a fixed value. Nevertheless, we can use a second pid controller to control it.
 
 ## Full-lap run
-![YouTube](https://youtu.be/7HRzkOmXJs0)
+[YouTube](https://youtu.be/7HRzkOmXJs0)
 
 
 # Reflection
@@ -54,4 +54,4 @@ __turning w/ I component__:
 
 ![with integral term at turning](pid-with-integrate.gif)
 
-Finally, I found that the tuning of the PID gains also depend on which computer the simulation is running. This is likely due to the fact that different computer runs at different speed but the `dt` term in our PID controller is implicitly assumed as 1.0. However, more realistic modeling should use the true time duration of the feedback control.
+Finally, I found that the tuning of the PID gains also depend on which computer the simulation is running. This is likely due to the fact that different computer runs at different clock speed but the `dt` term in our PID controller is implicitly assumed as 1.0. However, more realistic modeling should use the true time duration of the feedback control.
