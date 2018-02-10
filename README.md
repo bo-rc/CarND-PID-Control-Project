@@ -35,7 +35,7 @@ Finally, I use a set of tuned parameters to initialize the `PID` controller for 
 The throttle input is a fixed value. Nevertheless, we can use a second pid controller to control it.
 
 ## Full-lap run
-
+![YouTube](https://youtu.be/7HRzkOmXJs0)
 
 
 # Reflection
@@ -48,9 +48,10 @@ For example, during a turn the error would accumulate faster such that the P com
 
 __turning w/o I component__:
 
-
+![without integral term at turning](pid-without-integrate.gif)
 
 __turning w/ I component__:
 
+![with integral term at turning](pid-with-integrate.gif)
 
 Finally, I found that the tuning of the PID gains also depend on which computer the simulation is running. This is likely due to the fact that different computer runs at different speed but the `dt` term in our PID controller is implicitly assumed as 1.0. However, more realistic modeling should use the true time duration of the feedback control.
